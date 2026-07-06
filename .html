@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bucin Meter - Cek Kecocokan Cinta</title>
+    <style>
+        :root {
+            --primary-color: #ff4d6d;
+            --secondary-color: #ff758f;
+            --bg-color: #fff0f3;
+            --text-color: #590d22;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 450px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(255, 77, 109, 0.2);
+            padding: 30px;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        p.subtitle {
+            font-size: 14px;
+            margin-bottom: 25px;
+            color: #a71e34;
+        }
+
+        .heart-icon {
+            font-size: 50px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0 { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input[type="text"], input[type="date"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ffccd5;
+            border-radius: 10px;
+            font-size: 16px;
+            color: var(--text-color);
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .quiz-option {
+            background: #fff0f3;
+            border: 2px solid #ffccd5;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            text-align: left;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .quiz-option.selected {
+            background: var(--secondary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(255, 77, 109, 0.6);
+        }
+
+        .result-box {
+            margin: 20px 0;
+        }
+
+        .score {
+            font-size: 64px;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+
+        .verdict {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .desc {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #666;
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="screen-main" class="screen active">
+            <div class="heart-icon">💖</div>
+            <h1>Bucin Meter</h1>
+            <p class="subtitle">Uji kecocokanmu dengan si doi. Beneran jodoh atau cuma badut?</p>
+            <button onclick="nextScreen('screen-nama')">Mulai Tes Cinta 💖</button>
+        </div>
+
+        <div id="screen-nama" class="screen">
+            <h1>Pencocokan Nama</h1>
+            <p class="subtitle">Nama adalah doa, tapi kalau disatuin jadi cinta atau bencana?</p>
+            <div class="form-group">
+                <label>Nama Kamu</label>
+                <input type="text" id="nama-kamu" placeholder="Masukkan nama kamu...">
+            </div>
+            <div class="form-group">
+                <label>Nama Doi</label>
+                <input type="text" id="nama-doi" placeholder="Masukkan nama doi...">
+            </div>
+            <button onclick="validateNama()">Lanjut: Cek Tanggal Lahir 🔮</button>
+        </div>
+
+        <div id="screen-tanggal" class="screen">
+            <h1>Tanggal Lahir</h1>
+            <p class="subtitle">Katanya bintang di langit bisa membaca masa depan hubungan kalian.</p>
+            <div class="form-group">
+                <label>Tanggal Lahir Kamu</label>
+                <input type="date" id="tgl-kamu">
+            </div>
+            <div class="form-group">
+                <label>Tanggal Lahir Doi</label>
+                <input type="date" id="tgl-doi">
+            </div>
+            <button onclick="validateTanggal()">Lanjut: Uji Sefrekuensi Kesukaan 📊</button>
+        </div>
+
+        <div id="screen-kuis" class="screen">
+            <h1>Sefrekuensi Kuis</h1>
+            <p class="subtitle">Apakah kalian satu frekuensi dalam hal kecil?</p>
+            <div id="quiz-container">
+                <div class="form-group">
+                    <label id="question-label">Pertanyaan</label>
+                    <div class="quiz-option" onclick="selectOption(this, 1)">Opsi A</div>
+                    <div class="quiz-option" onclick="selectOption(this, 2)">Opsi B</div>
+                </div>
+            </div>
+            <button id="quiz-btn" onclick="nextQuestion()">Pertanyaan Selanjutnya ──►</button>
+        </div>
+
+        <div id="screen-hasil" class="screen">
+            <h1>Hasil Skor Kebucinan</h1>
+            <div class="result-box">
+                <div class="score" id="final-score">0%</div>
+                <div class="verdict" id="final-verdict">-</div>
+                <p class="desc" id="final-desc">-</p>
+            </div>
+            <button onclick="shareResult()">Bagikan Ke Doi (WhatsApp) 📱</button>
+            <button onclick="resetGame()" style="background: #ccc; color: #333; box-shadow: none; margin-top: 10px;">Coba Lagi ↺</button>
+        </div>
+    </div>
+
+    <script>
+        // Data Pertanyaan Kuis Sefrekuensi
+        const questions = [
+            { q: "Tim bubur kalau makan harus giman?", a: "Diaduk dong!", b: "Gak diaduk, biar estetik." },
+            { q: "Malem minggu ideal itu ngapain?", a: "Netflix-an / Deep talk di rumah.", b: "Nongkrong hits di cafe." },
+            { q: "Hal yang paling gak bisa dimaafin?", a: "Dicuekin / Gak dikasih kabar.", b: "Bohong / Sembunyiin sesuatu." }
+        ];
+
+        let currentQuestionIdx = 0;
+        let selectedAnswers = [];
+
+        function nextScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            
+            if(screenId === 'screen-kuis') {
+                currentQuestionIdx = 0;
+                selectedAnswers = [];
+                showQuestion();
+            }
+        }
+
+        function validateNama() {
+            const n1 = document.getElementById('nama-kamu').value.trim();
+            const n2 = document.getElementById('nama-doi').value.trim();
+            if(!n1 || !n2) {
+                alert('Isi dulu nama kamu dan doi ya!');
+                return;
+            }
+            nextScreen('screen-tanggal');
+        }
+
+        function validateTanggal() {
+            const t1 = document.getElementById('tgl-kamu').value;
+            const t2 = document.getElementById('tgl-doi').value;
+            if(!t1 || !t2) {
+                alert('Tanggal lahirnya diisi dulu dong!');
+                return;
+            }
+            nextScreen('screen-kuis');
+        }
+
+        function showQuestion() {
+            const currentQ = questions[currentQuestionIdx];
+            document.getElementById('question-label').innerText = currentQ.q;
+            const options = document.querySelectorAll('.quiz-option');
+            options[0].innerText = currentQ.a;
+            options[1].innerText = currentQ.b;
+            options.forEach(o => o.classList.remove('selected'));
+            
+            if(currentQuestionIdx === questions.length - 1) {
+                document.getElementById('quiz-btn').innerText = "Lihat Hasil Akhir ✨";
+            } else {
+                document.getElementById('quiz-btn').innerText = "Pertanyaan Selanjutnya ──►";
+            }
+        }
+
+        function selectOption(element, val) {
+            document.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedAnswers[currentQuestionIdx] = val;
+        }
+
+        function nextQuestion() {
+            if(selectedAnswers[currentQuestionIdx] === undefined) {
+                alert('Pilih salah satu jawaban dulu ya!');
+                return;
+            }
+            
+            if(currentQuestionIdx < questions.length - 1) {
+                currentQuestionIdx++;
+                showQuestion();
+            } else {
+                calculateFinalScore();
+            }
+        }
+
+        function calculateFinalScore() {
+            const n1 = document.getElementById('nama-kamu').value.toLowerCase();
+            const n2 = document.getElementById('nama-doi').value.toLowerCase();
+            
+            // Logika kalkulasi kecocokan karakter nama
+            let nameScore = 0;
+            for(let i=0; i<n1.length; i++) {
+                if(n2.includes(n1[i])) nameScore += 7;
+            }
+            if(nameScore === 0 || nameScore > 50) {
+                nameScore = Math.floor(Math.random() * 20) + 35; 
+            } else {
+                nameScore = nameScore + 35;
+            }
+
+            // Bonus sinkronisasi jawaban kuis
+            let quizBonus = (selectedAnswers[0] === selectedAnswers[1]) ? 15 : 10;
+            quizBonus += (selectedAnswers[1] === selectedAnswers[2]) ? 15 : 8;
+
+            let finalScore = nameScore + quizBonus;
+            if(finalScore > 100) finalScore = 99;
+            if(finalScore < 30) finalScore = 42;
+
+            document.getElementById('final-score').innerText = finalScore + "%";
+            
+            const verdict = document.getElementById('final-verdict');
+            const desc = document.getElementById('final-desc');
+
+            if(finalScore >= 75) {
+                verdict.innerText = "BUCIN AKUT / FIX JODOH! 💖";
+                desc.innerText = "Wah, chemistry kalian berdua luar biasa! Nama, tanggal, dan selera kalian klop banget. Langsung otw KUA aja apa gimana?";
+            } else if(finalScore >= 50) {
+                verdict.innerText = "ZONA AMAN (BUTUH DEEP TALK) ☕";
+                desc.innerText = "Hubungan kalian lumayan stabil, tapi masih sering gengsi-gengsian. Kurangin curigaan, banyakin ngobrol santai ya!";
+            } else {
+                verdict.innerText = "SAD BOY / SAD GIRL ZONE 🤡";
+                desc.innerText = "Hmm.. sepertinya frekuensi kalian agak sering tabrakan nih. Tapi tenang, cinta kan butuh perjuangan, bukan sekadar angka di atas kertas!";
+            }
+
+            nextScreen('screen-hasil');
+        }
+
+        function shareResult() {
+            const namaKamu = document.getElementById('nama-kamu').value;
+            const namaDoi = document.getElementById('nama-doi').value;
+            const skor = document.getElementById('final-score').innerText;
+            const status = document.getElementById('final-verdict').innerText;
+            
+            const teks = `Sini deh, aku habis cek tingkat kebucinan kita di Bucin Meter! Hasilnya:\n\n💞 ${namaKamu} x ${namaDoi}\n📈 Skor Kecocokan: ${skor}\n🔮 Status: ${status}\n\nCoba cek punya kamu juga!`;
+            const url = "https://api.whatsapp.com/send?text=" + encodeURIComponent(teks);
+            window.open(url, '_blank');
+        }
+
+        function resetGame() {
+            document.getElementById('nama-kamu').value = '';
+            document.getElementById('nama-doi').value = '';
+            document.getElementById('tgl-kamu').value = '';
+            document.getElementById('tgl-doi').value = '';
+            nextScreen('screen-main');
+        }
+    </script>
+</body>
+</html>
